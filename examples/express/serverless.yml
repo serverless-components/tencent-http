@@ -1,0 +1,21 @@
+app: appDemo
+stage: dev
+
+component: http@dev
+name: expressDemo
+
+inputs:
+  src:
+    src: ./
+    exclude:
+      - .env
+  faas:
+    framework: egg
+    bootstrap:
+      cmd: node app.js
+      port: 9000
+    name: ${name}
+  apigw:
+    protocols:
+      - http
+      - https

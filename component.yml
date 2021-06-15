@@ -1,0 +1,9 @@
+type: component
+name: http
+author: Tencent Cloud Inc.
+org: Tencent Cloud Inc.
+description: Deploy web framework onto Tencent Cloud
+keywords: http,web,framework,tencent,serverless
+repo: https://github.com/serverless-components/tencent-http
+readme: https://github.com/serverless-components/tencent-http/tree/master/README.md
+license: 'MIT'

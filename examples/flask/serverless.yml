@@ -1,0 +1,25 @@
+app: appDemo
+stage: dev
+
+component: flask@dev
+name: flaskDemo
+
+inputs:
+  src:
+    # TODO: 安装python项目依赖到项目当前目录
+    hook: 'pip3 install -r requirements.txt -t ./'
+    dist: ./
+    exclude:
+      - .env
+      - 'requirements/**'
+      - '__pycache__/**'
+  region: ap-guangzhou
+  faas:
+    startCmd: python -m flask run --port=9000
+    serverPort: 9000
+    name: ${name}
+  apigw:
+    protocols:
+      - http
+      - https
+    environment: release

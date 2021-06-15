@@ -1,0 +1,21 @@
+app: appDemo
+stage: dev
+
+component: http@dev
+name: eggDemo
+
+inputs:
+  src:
+    src: ./
+    exclude:
+      - .env
+  faas:
+    framework: egg
+    bootstrap:
+      cmd: npm run start
+      port:
+    name: ${name}
+  apigw:
+    protocols:
+      - http
+      - https

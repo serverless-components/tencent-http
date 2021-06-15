@@ -1,0 +1,19 @@
+app: appDemo
+stage: dev
+
+component: thinkphp@dev
+name: thinkphpDemo
+
+inputs:
+  src: ./
+  region: ap-guangzhou
+  faas:
+    name: ${name}
+    environments:
+      - key: APP_ENV
+        value: production
+  apigw:
+    protocols:
+      - http
+      - https
+    environment: release

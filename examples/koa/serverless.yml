@@ -1,0 +1,21 @@
+app: appDemo
+stage: dev
+
+component: http@dev
+name: koaDemo
+
+inputs:
+  src:
+    src: ./
+    exclude:
+      - .env
+  faas:
+    framework: koa
+    bootstrap:
+      cmd: node app.js
+      port: 9000
+    name: ${name}
+  apigw:
+    protocols:
+      - http
+      - https

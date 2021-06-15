@@ -1,0 +1,23 @@
+app: appDemo
+stage: dev
+
+component: gin@dev
+name: ginDemo
+
+inputs:
+  src:
+    src: ./
+    exclude:
+      - .env
+      - 'requirements/**'
+      - '__pycache__/**'
+  region: ap-guangzhou
+  faas:
+    startCmd: ./main
+    serverPort: 9000
+    name: ${name}
+  apigw:
+    protocols:
+      - http
+      - https
+    environment: release
