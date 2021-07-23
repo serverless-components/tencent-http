@@ -21,10 +21,8 @@ const instanceYaml: YamlConfig = {
   stage: 'dev',
   inputs: {
     faas: {
-      bootstrap: {
-        cmd: 'node sls.js',
-        port: 9000,
-      },
+      framework: 'express',
+      name: `express-intergration-test-${generateId()}`,
     },
   },
 };
@@ -49,7 +47,7 @@ describe('Express', () => {
     expect(instance.outputs.apigw).toBeDefined();
     expect(instance.outputs.apigw.environment).toEqual('release');
     expect(instance.outputs.faas).toBeDefined();
-    expect(instance.outputs.faas.runtime).toEqual('Nodejs10.15');
+    expect(instance.outputs.faas.runtime).toEqual('Nodejs12.16');
   });
 
   it('update source code', async () => {
@@ -61,7 +59,7 @@ describe('Express', () => {
     const instance = await sdk.deploy(instanceYaml, credentials);
     const response = await axios.get(instance.outputs.apigw.url);
 
-    expect(response.data.includes('Serverless Framework')).toBeTruthy();
+    expect(response.data.includes('Serverless')).toBeTruthy();
     expect(instance.outputs.templateUrl).not.toBeDefined();
   });
 

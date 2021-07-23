@@ -113,7 +113,7 @@ const CONFIGS: DefaultConfig = {
 };
 
 export const getConfig = (framework: Framework): FrameworkConfig => {
-  const templateUrl = `${TEMPLATE_BASE_URL}/${framework}-demo.zip`;
+  const templateUrl = `${TEMPLATE_BASE_URL}/http/${framework}.zip`;
   const frameworkConfigs = frameworks[framework];
   return {
     framework,

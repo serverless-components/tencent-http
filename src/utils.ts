@@ -118,8 +118,8 @@ export const getCodeZipPath = async (inputs: FaasSdkInputs) => {
     zipPath = `${downloadPath}/${filename}.zip`;
   } else {
     zipPath = inputs.code.src;
-    initializeBootstrap(framework, zipPath);
   }
+  initializeBootstrap(framework, zipPath);
 
   // 自动注入 public 目录
   if (framework === 'egg') {
