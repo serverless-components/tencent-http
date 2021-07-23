@@ -1,13 +1,13 @@
 module.exports = {
   root: true,
-  extends: ['prettier'],
-  plugins: ['import', 'prettier'],
+  extends: ['prettier', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['import', 'prettier', '@typescript-eslint'],
   env: {
     es6: true,
     jest: true,
     node: true,
   },
-  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
@@ -48,7 +48,14 @@ module.exports = {
     'no-empty': 'off',
     'no-shadow': 'error',
     'no-undef': 'error',
-    'no-unused-vars': 'error',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+
     'no-use-before-define': 'error',
     'no-useless-constructor': 'error',
     'object-curly-newline': 'off',

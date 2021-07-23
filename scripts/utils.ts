@@ -89,7 +89,7 @@ export function getExampleConfig(framework: string) {
   };
 }
 
-export function generateId(len: number = 6) {
+export function generateId(len = 6) {
   const randomStr = Math.random().toString(36);
   return randomStr.substr(-len);
 }

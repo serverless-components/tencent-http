@@ -14,6 +14,12 @@ export type Framework =
   | 'thinkphp'
   | 'gin';
 
+export interface Credential {
+  SecretId: string;
+  SecretKey: string;
+  Token?: string;
+}
+
 export type Policy = {
   Statement: [
     {

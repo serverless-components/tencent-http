@@ -5,6 +5,7 @@ import { deepClone, getCodeZipPath, getDefaultProtocol } from './utils';
 import { formatInputs, formatStaticCosInputs, formatStaticCdnInputs } from './formatter';
 
 import {
+  Credential,
   State,
   Inputs,
   FaasSdkInputs,
@@ -85,6 +86,7 @@ export class ServerlessComponent extends Component<State> {
 
         // if shims and sls sdk entries had been injected to zipPath, no need to injected again
         console.log(`Uploading code to bucket ${bucketName}`);
+        // eslint-disable-next-lint
         await this.uploadSourceZipToCOS(zipPath, uploadUrl as string, {}, {});
         console.log(`Upload ${objectName} to bucket ${bucketName} success`);
       }
@@ -96,7 +98,7 @@ export class ServerlessComponent extends Component<State> {
     };
   }
 
-  async deployFunction(credentials: {}, inputs: FaasSdkInputs = {}, region: string) {
+  async deployFunction(credentials: Credential, inputs: FaasSdkInputs = {}, region: string) {
     const appId = this.getAppId();
 
     const code = await this.uploadCodeToCos(appId, inputs, region);
@@ -118,7 +120,7 @@ export class ServerlessComponent extends Component<State> {
     return outputs;
   }
 
-  async deployApigw(credentials: {}, inputs: ApigwSdkInputs, region: string) {
+  async deployApigw(credentials: Credential, inputs: ApigwSdkInputs, region: string) {
     const apigw = new Apigw(credentials, region);
 
     const oldState = this.state ?? {};
