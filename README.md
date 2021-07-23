@@ -5,7 +5,6 @@
 特性介绍：
 
 - [x] **按需付费** - 按照请求的使用量进行收费，没有请求时无需付费
-- [x] **"0"配置** - 只需要关心项目代码，之后部署即可，Serverless Framework 会搞定所有配置。
 - [x] **极速部署** - 仅需几秒，部署你的整个 Web 框架应用。
 - [x] **实时日志** - 通过实时日志的输出查看业务状态，便于直接在云端开发应用。
 - [x] **云端调试** - 针对 Node.js 框架支持一键云端调试能力，屏蔽本地环境的差异。
@@ -20,8 +19,8 @@
 
 1. [**安装**](#1-安装)
 2. [**创建**](#2-创建)
-3. [**部署**](#3-部署)
-4. [**配置**](#4-配置)
+3. [**配置**](#3-配置)
+4. [**部署**](#4-部署)
 5. [**开发调试**](#5-开发调试)
 6. [**查看状态**](#6-查看状态)
 7. [**移除**](#7-移除)
@@ -41,7 +40,7 @@ $ npm install -g serverless
 
 > 注意：如果项目目录下存在 `sls.js`，`Windows` 系统会默认执行 `sls.js` 脚本文件，此时建议 `Windows` 用户不要使用 `sls` 简写命令。
 
-### 2. 创建
+### 2. 创建项目
 
 快速创建一个 Express 应用：
 
@@ -78,7 +77,31 @@ app.listen(9000, () => {
 $ npm install express --save
 ```
 
-### 3. 部署
+### 3. 配置
+
+在项目根目录添加配置文件 `serverless.yml`，如下所示：
+
+```yml
+# serverless.yml
+component: http
+name: expressDemo
+
+inputs:
+  src:
+    src: ./
+  region: ap-guangzhou
+  faas:
+    name: expressDemo
+    runtime: Nodejs10.15
+  apigw:
+    protocols:
+      - http
+      - https
+```
+
+点此查看[全量配置及配置说明](./docs/configure.md)
+
+### 4. 部署
 
 在 `serverless.yml` 文件所在的项目根目录，运行以下指令进行部署：
 
@@ -93,39 +116,6 @@ $ sls deploy
 部署完成后，控制台会打印相关的输出信息，您可以通过 `${output:${stage}:${app}:apigw.url}` 的形式在其他 `serverless` 组件中引用该组件的 API 网关访问链接（或通过类似的形式引用该组建其他输出结果），具体的，可以查看完成的输出文档：
 
 - [点击此处查看输出文档](./docs/output.md)
-
-### 4. 配置
-
-框架组件支持 0 配置部署，也就是可以直接通过配置文件中的默认值进行部署。但你依然可以修改更多可选配置来进一步开发该 Web 框架项目。
-
-以下是 Express 组件的 `serverless.yml`配置示例：
-
-```yml
-# serverless.yml
-component: http
-name: expressDemo
-app: appDemo
-stage: dev
-
-inputs:
-  src:
-    src: ./
-  region: ap-guangzhou
-  faas:
-    bootstrap:
-      cmd: node sls.js
-
-    name: expressDemo
-    runtime: Nodejs10.15
-  apigw:
-    protocols:
-      - http
-      - https
-```
-
-点此查看[全量配置及配置说明](./docs/configure.md)
-
-当你根据该配置文件更新配置字段后，再次运行 `sls deploy` 或者 `serverless` 就可以更新配置到云端。
 
 ### 5. 开发调试
 

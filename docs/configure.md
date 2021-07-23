@@ -59,15 +59,6 @@ inputs:
         protocols: # 绑定自定义域名的协议类型，默认与服务的前端协议一致。
           - http # 支持http协议
           - https # 支持https协议
-    usagePlan: #  用户使用计划
-      usagePlanId: 1111
-      usagePlanName: slscmp
-      usagePlanDesc: sls create
-      maxRequestNum: 1000
-    auth: #  密钥
-      secretName: secret
-      secretIds:
-        - xxx
     app: #  应用授权配置
       id: app-xxx
       name: app_demo

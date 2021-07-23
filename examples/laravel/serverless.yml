@@ -2,7 +2,10 @@ component: http
 name: laravelDemo
 
 inputs:
-  src: ./
+  src:
+    src: ./
+    exclude:
+      - .env
   region: ap-guangzhou
   faas:
     name: ${name}

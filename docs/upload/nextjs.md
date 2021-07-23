@@ -3,8 +3,6 @@
 项目中如果涉及到文件上传，需要依赖 API 网关提供的 [Base64 编码能力](https://cloud.tencent.com/document/product/628/51799)，使用时只需要 `serverless.yml` 中配置 `isBase64Encoded` 为 `true`，如下：
 
 ```yaml
-app: appDemo
-stage: dev
 component: http
 name: nextjsDemo
 

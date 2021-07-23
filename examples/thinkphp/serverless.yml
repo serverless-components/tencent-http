@@ -2,7 +2,10 @@ component: http
 name: thinkphpDemo
 
 inputs:
-  src: ./
+  src:
+    src: ./
+    exclude:
+      - .env
   region: ap-guangzhou
   faas:
     name: ${name}

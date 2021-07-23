@@ -1,6 +1,3 @@
-app: appDemo
-stage: dev
-
 component: http
 name: expressDemo
 
