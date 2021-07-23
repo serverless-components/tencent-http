@@ -7,8 +7,10 @@
   "description": "Tencent Cloud Serverless Component of Web Frameworks",
   "scripts": {
     "test": "jest",
+    "bootstrap": "ts-node ./scripts/bootstrap.ts",
     "deploy": "ts-node ./scripts/deploy.ts",
     "example": "ts-node ./scripts/example.ts",
+    "update:version": "ts-node ./scripts/version.ts",
     "zip": "ts-node ./scripts/zip.ts",
     "build": "tsc -p . && ncp ./src/node_modules ./build/node_modules",
     "commitlint": "commitlint -f HEAD@{15}",
