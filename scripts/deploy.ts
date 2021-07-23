@@ -20,6 +20,22 @@ async function buildProject() {
   copySync(join(__dirname, '..', 'src/node_modules'), join(__dirname, '..', 'build/node_modules'));
 }
 
+async function copyExtraFiles() {
+  const shimPath = join(__dirname, '..', `src/_shims`);
+  const targetShimPath = join(__dirname, '..', 'build/_shims');
+  const fixturePath = join(__dirname, '..', 'src/_fixtures');
+  const targetFixturePath = join(__dirname, '..', 'build/_fixtures');
+
+  // 复制前，需要先删除
+  rmdirSync(targetShimPath);
+  rmdirSync(targetFixturePath);
+
+  // 复制指定框架的 _shims 文件
+  copySync(shimPath, targetShimPath);
+  // 复制 _fixtures
+  copySync(fixturePath, targetFixturePath);
+}
+
 async function deploy(options: { [propName: string]: any }) {
   const stage = options.env || 'dev';
   process.env.SERVERLESS_PLATFORM_STAGE = stage;
@@ -33,6 +49,9 @@ async function deploy(options: { [propName: string]: any }) {
     spinner.stop();
     return true;
   }
+
+  spinner.info(`Copying extra files for component...`);
+  await copyExtraFiles();
 
   spinner.info(`Generate config file for compooent ${COMPONENT_NAME}...`);
   const { version } = parseYaml(VERSION_YAML_PATH);

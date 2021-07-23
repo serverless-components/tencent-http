@@ -5,9 +5,9 @@ export type Framework =
   | 'express'
   | 'koa'
   | 'egg'
-  | 'nextjs'
-  | 'nuxtjs'
-  | 'nestjs'
+  | 'next'
+  | 'nuxt'
+  | 'nest'
   | 'flask'
   | 'django'
   | 'laravel'
@@ -58,7 +58,6 @@ export type FrameworkConfig = {
   };
   // eslint-disable-next-line
   getPolicy: (r: string, b: string, a: string) => Policy;
-  injectSlsSdk?: boolean;
   pythonFrameworks?: string[];
   supportMetrics?: string[];
   defaultEnvs: {

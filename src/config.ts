@@ -6,90 +6,41 @@ const TEMPLATE_BASE_URL = 'https://serverless-templates-1300862921.cos.ap-beijin
 
 const frameworks: Record<Framework, { [prop: string]: any }> = {
   express: {
-    injectSlsSdk: true,
     defaultStatics: [{ src: 'public', targetDir: '/' }],
   },
   koa: {
-    injectSlsSdk: true,
     defaultStatics: [{ src: 'public', targetDir: '/' }],
   },
   egg: {
-    injectSlsSdk: true,
-    defaultStatics: [{ src: 'public', targetDir: '/' }],
-    defaultEnvs: [
-      {
-        key: 'SERVERLESS',
-        value: '1',
-      },
-      {
-        key: 'EGG_APP_CONFIG',
-        value: '{"rundir":"/tmp","logger":{"dir":"/tmp"}}',
-      },
-    ],
-  },
-  nestjs: {
-    injectSlsSdk: true,
     defaultStatics: [{ src: 'public', targetDir: '/' }],
   },
-  nextjs: {
-    injectSlsSdk: true,
+  nest: {
+    defaultStatics: [{ src: 'public', targetDir: '/' }],
+  },
+  next: {
     defaultStatics: [
       { src: '.next/static', targetDir: '/_next/static' },
       { src: 'public', targetDir: '/' },
     ],
   },
-  nuxtjs: {
-    injectSlsSdk: true,
+  nuxt: {
     defaultStatics: [
       { src: '.nuxt/dist/client', targetDir: '/' },
       { src: 'static', targetDir: '/' },
     ],
   },
-  laravel: {
-    injectSlsSdk: false,
-    defaultEnvs: [
-      {
-        key: 'SERVERLESS',
-        value: '1',
-      },
-      {
-        key: 'VIEW_COMPILED_PATH',
-        value: '/tmp/storage/framework/views',
-      },
-      {
-        key: 'SESSION_DRIVER',
-        value: 'array',
-      },
-      {
-        key: 'LOG_CHANNEL',
-        value: 'stderr',
-      },
-      {
-        key: 'APP_STORAGE',
-        value: '/tmp',
-      },
-    ],
-  },
-  thinkphp: {
-    injectSlsSdk: false,
-  },
-  flask: {
-    injectSlsSdk: false,
-  },
-  django: {
-    injectSlsSdk: false,
-  },
-  gin: {
-    injectSlsSdk: false,
-  },
+  laravel: {},
+  thinkphp: {},
+  flask: {},
+  django: {},
+  gin: {},
 };
 
 const CONFIGS: DefaultConfig = {
   // support metrics frameworks
-  supportMetrics: ['express', 'next', 'nuxt'],
   region: 'ap-guangzhou',
   description: 'Created by Serverless Component',
-  handler: 'sl_handler.handler',
+  handler: 'scf_bootstrap',
   timeout: 10,
   memorySize: 128,
   namespace: 'default',

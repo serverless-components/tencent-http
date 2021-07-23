@@ -1,25 +1,19 @@
 app: appDemo
 stage: dev
 
-component: nuxtjs@dev
-name: nuxtjsDemo
+component: http
+name: nuxtDemo
 
 inputs:
   src:
-    hook: npm run build
     dist: ./
+    hook: npm run build
     exclude:
       - .env
-  region: ap-guangzhou
-  functionConf:
+  faas:
+    framework: nuxt
     name: ${name}
-    runtime: Nodejs10.15
-  apigatewayConf:
+  apigw:
     protocols:
       - http
       - https
-    environment: release
-  staticConf:
-    cosConf:
-      replace: true
-      bucket: nuxtjs-demo

@@ -1,20 +1,17 @@
-app: appDemo
-stage: dev
-
-component: laravel@dev
+component: http
 name: laravelDemo
 
 inputs:
   src: ./
   region: ap-guangzhou
-  functionConf:
+  faas:
     name: ${name}
+    framework: laravel
     runtime: Php7
     environments:
-      variables:
-        APP_ENV: production
-  apigatewayConf:
+      - key: APP_ENV
+        value: production
+  apigw:
     protocols:
       - http
       - https
-    environment: release

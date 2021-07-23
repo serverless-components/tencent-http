@@ -1,7 +1,7 @@
 import { Component } from '@serverless/core';
-import { Scf, Apigw, Metrics, Cos, Cdn } from 'tencent-component-toolkit';
-import { ApiTypeError } from 'tencent-component-toolkit/lib/utils/error';
-import { deepClone, getCodeZipPath, getDefaultProtocol, getInjection } from './utils';
+import { Scf, Apigw, Cos, Cdn } from 'tencent-component-toolkit';
+import { ApiError } from 'tencent-component-toolkit/lib/utils/error';
+import { deepClone, getCodeZipPath, getDefaultProtocol } from './utils';
 import { formatInputs, formatStaticCosInputs, formatStaticCdnInputs } from './formatter';
 
 import {
@@ -15,7 +15,6 @@ import {
   ApigwOutputs,
   AssetsOutputs,
   AssetsCosOutputs,
-  MetricsInputs,
   Framework,
 } from './interface';
 
@@ -26,10 +25,11 @@ export class ServerlessComponent extends Component<State> {
     const { tmpSecrets } = this.credentials.tencent;
 
     if (!tmpSecrets || !tmpSecrets.TmpSecretId) {
-      throw new ApiTypeError(
-        'CREDENTIAL',
-        'Cannot get secretId/Key, your account could be sub-account and does not have the access to use SLS_QcsRole, please make sure the role exists first, then visit https://cloud.tencent.com/document/product/1154/43006, follow the instructions to bind the role to your account.',
-      );
+      throw new ApiError({
+        type: 'CREDENTIAL',
+        message:
+          '无法获取授权密钥信息，账号可能为子账户，并且没有角色 SLS_QcsRole 的权限，请确认角色 SLS_QcsRole 是否存在，参考 https://cloud.tencent.com/document/product/1154/43006',
+      });
     }
 
     return {
@@ -45,6 +45,7 @@ export class ServerlessComponent extends Component<State> {
 
   async uploadCodeToCos(appId: string, inputs: FaasSdkInputs, region: string) {
     const credentials = this.getCredentials();
+    // TODO: 默认还是使用历史的桶名称
     const bucketName = inputs.code?.bucket || `sls-cloudfunction-${region}-code`;
     const objectName = inputs.code?.object || `${inputs.name}-${Math.floor(Date.now() / 1000)}.zip`;
     // if set bucket and object not pack code
@@ -84,10 +85,7 @@ export class ServerlessComponent extends Component<State> {
 
         // if shims and sls sdk entries had been injected to zipPath, no need to injected again
         console.log(`Uploading code to bucket ${bucketName}`);
-
-        const { injectFiles, injectDirs } = getInjection(this);
-
-        await this.uploadSourceZipToCOS(zipPath, uploadUrl, injectFiles, injectDirs);
+        await this.uploadSourceZipToCOS(zipPath, uploadUrl as string, {}, {});
         console.log(`Upload ${objectName} to bucket ${bucketName} success`);
       }
     }
@@ -109,6 +107,7 @@ export class ServerlessComponent extends Component<State> {
     };
     const scfOutput = await scf.deploy(deepClone(tempInputs));
     const outputs: FaasOutputs = {
+      type: 'web',
       name: scfOutput.FunctionName,
       runtime: scfOutput.Runtime,
       namespace: scfOutput.Namespace,
@@ -123,14 +122,14 @@ export class ServerlessComponent extends Component<State> {
     const apigw = new Apigw(credentials, region);
 
     const oldState = this.state ?? {};
-    const apigwInputs = {
+    const tempInputs = {
       ...inputs,
       oldState: {
         apiList: oldState.apigw?.apiList || [],
         customDomains: oldState.apigw?.customDomains || [],
       },
     };
-    const apigwOutput = await apigw.deploy(deepClone(apigwInputs));
+    const apigwOutput = await apigw.deploy(deepClone(tempInputs));
 
     const outputs: ApigwOutputs = {
       created: apigwOutput.created,
@@ -139,7 +138,7 @@ export class ServerlessComponent extends Component<State> {
       environment: apigwOutput.environment,
       url: `${getDefaultProtocol(inputs.protocols)}://${apigwOutput.subDomain}/${
         apigwOutput.environment
-      }${apigwInputs.endpoints[0].path}`,
+      }${tempInputs.endpoints[0].path}`,
       apiList: apigwOutput.apiList,
     };
 
@@ -331,41 +330,5 @@ export class ServerlessComponent extends Component<State> {
     await this.removeStatic();
 
     this.state = {} as State;
-  }
-
-  async metrics(inputs: MetricsInputs = {}) {
-    console.log(`Getting metrics data`);
-    if (!inputs.rangeStart || !inputs.rangeEnd) {
-      throw new ApiTypeError(
-        `PARAMETER_HTTP_METRICS`,
-        'rangeStart and rangeEnd are require inputs',
-      );
-    }
-    const { state } = this;
-    const { region, apigw: apigwState, faas: faasState } = state;
-    if (!region) {
-      throw new ApiTypeError(`PARAMETER_HTTP_METRICS`, 'No region property in state');
-    }
-    if (faasState?.name) {
-      const options: { [prop: string]: any } = {
-        funcName: faasState.name,
-        namespace: faasState.namespace,
-        region,
-        timezone: inputs.tz,
-      };
-      if (apigwState?.id) {
-        options.apigwServiceId = apigwState.id;
-        options.apigwEnvironment = apigwState.environment || 'release';
-      }
-      const credentials = this.getCredentials();
-      const mertics = new Metrics(credentials, options);
-      const metricResults = await mertics.getDatas(
-        inputs.rangeStart,
-        inputs.rangeEnd,
-        Metrics.Type.All,
-      );
-      return metricResults;
-    }
-    throw new ApiTypeError(`PARAMETER_HTTP_METRICS`, 'Function name not define');
   }
 }

@@ -1,7 +1,7 @@
 app: appDemo
 stage: dev
 
-component: http@dev
+component: http
 name: eggDemo
 
 inputs:
@@ -11,9 +11,6 @@ inputs:
       - .env
   faas:
     framework: egg
-    bootstrap:
-      cmd: npm run start
-      port:
     name: ${name}
   apigw:
     protocols:

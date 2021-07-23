@@ -6,11 +6,8 @@ export interface KeyValue {
 }
 
 export interface FaasInputs {
+  type?: 'web' | 'event';
   framework?: Framework;
-  bootstrap: {
-    cmd: string;
-    port: string | number;
-  };
   code?: { bucket?: string; object?: string; src?: string };
 
   name?: string;
@@ -77,9 +74,13 @@ export interface ApigwInputs {
     isForcedHttps: boolean;
   }[];
 
-  cors?: boolean;
-
-  timeout?: number;
+  api: {
+    path?: string;
+    method?: string;
+    name?: string;
+    cors?: boolean;
+    timeout?: number;
+  };
 
   protocols: ('http' | 'https')[];
 
@@ -170,6 +171,7 @@ export interface ApigwSdkInputs {
     apiName?: string;
 
     function?: {
+      functionType?: 'HTTP' | 'Event';
       isIntegratedResponse?: boolean;
       functionName: string;
       functionNamespace: string;

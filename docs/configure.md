@@ -4,11 +4,7 @@
 
 ```yml
 # serverless.yml
-
-app: appDemo # (可选) 用于记录组织信息. 默认与name相同，必须为字符串
-stage: dev # (可选) 用于区分环境信息，默认值是 dev
-
-component: express # (必选) 组件名称
+component: http # (必选) 组件名称
 name: webDemo # 必选) 组件实例名称.
 
 inputs:
@@ -22,9 +18,6 @@ inputs:
   #   bucket: bucket01 # bucket name，当前会默认在bucket name后增加 appid 后缀, 本例中为 bucket01-appid
   #   object: cos.zip  # bucket key 指定存储桶内的文件
   faas: # 函数配置相关
-    bootstrap: # 函数服务启动配置
-      cmd: node sls.js # 服务启动命令
-      port: 9000 # 服务监听端口
     framework: express
     name: webDemo # 云函数名称
     timeout: 10 # 超时时间，单位秒
@@ -41,12 +34,15 @@ inputs:
     tags:
       - key: tagKey
         value: tagValue
-  apigw: #  api网关配置
+  apigw: #  # http 组件会默认帮忙创建一个 API 网关服务
     isDisabled: false # 是否禁用自动创建 API 网关功能
-    id: service-np1uloxw # api网关服务ID
+    id: service-xxx # api网关服务ID
     name: serverless # api网关服务ID
-    cors: true #  允许跨域
-    timeout: 15 # api 超时时间
+    api: # 创建的 API 相关配置
+      cors: true #  允许跨域
+      timeout: 15 # API 超时时间
+      name: apiName # API 名称
+      qualifier: $DEFAULT # API 关联的版本
     protocols:
       - http
       - https
@@ -72,6 +68,10 @@ inputs:
       secretName: secret
       secretIds:
         - xxx
+    app: #  应用授权配置
+      id: app-xxx
+      name: app_demo
+      description: app description
   # 通常是为了部署 ssr 框架编译生成的静态文件
   static:
     cos:
@@ -92,21 +92,6 @@ inputs:
         http2: on
         certId: 'abc'
 ```
-
-`component` 支持的框架组件如下：
-
-- [x] express
-- [x] koa
-- [x] egg
-- [x] nextjs
-- [x] nuxtjs
-- [x] nestjs
-- [x] flask
-- [x] django
-- [x] laravel
-- [x] thinkphp
-
-> 注意：`entryFile` 仅 `Nodejs` 框架组件支持，`funcitonConf.projectName` 仅 `Django` 框架支持
 
 ## inputs 配置参数
 
@@ -137,7 +122,7 @@ inputs:
 
 | 参数名称     | 是否必选 | 类型                          | 默认值 | 描述                                                                            |
 | ------------ | :------: | :---------------------------- | :----: | :------------------------------------------------------------------------------ |
-| bootstrap    |    是    | [Bootstrap](#Bootstrap)       |        | 函数服务启动配置                                                                |
+| framework    |    是    | string                        |        | 项目框架名称，比如 `express`                                                    |
 | name         |    否    | string                        |        | 函数名称                                                                        |
 | timeout      |    否    | number                        |  `3`   | 函数最长执行时间，单位为秒，可选值范围 1-900 秒，默认为 3 秒                    |
 | memorySize   |    否    | number                        | `128`  | 函数运行时内存大小，默认为 128M，可选范围 64、128MB-3072MB，并且以 128MB 为阶梯 |
@@ -148,18 +133,18 @@ inputs:
 
 > 此处只是列举，`faas` 参数支持 [scf][scf-config] 组件的所有基础配置（ `events` 除外）
 
-```
-注意：云函数服务都是通过 `Node.js` 的子进程启动，所以部署的云函数 `runtime` 固定为 `Nodejs12.16`
-```
+`framework` 支持的框架如下：
 
-##### Bootstrap
-
-函数服务启动配置
-
-| 参数名称 | 是否必选 |  类型  | 默认值 | 描述         |
-| -------- | :------: | :----: | :----: | :----------- |
-| cmd      |    是    | string |        | 服务启动命令 |
-| port     |    否    | string |        | 服务监听端口 |
+- [x] express
+- [x] koa
+- [x] egg
+- [x] next
+- [x] nuxt
+- [x] nest
+- [x] flask
+- [x] django
+- [x] laravel
+- [ ] thinkphp (暂不支持)
 
 ##### Layer
 
@@ -192,18 +177,27 @@ VPC 配置
 
 API 网关配置
 
-| 参数名称       | 是否必选 | 类型                            | 默认值       | 描述                                                             |
-| -------------- | :------: | :------------------------------ | :----------- | :--------------------------------------------------------------- |
-| id             |    否    | string                          |              | API 网关服务 ID, 如果存在将使用这个 API 网关服务                 |
-| name           |    否    | string                          | `serverless` | API 网关服务名称, 默认创建一个新的服务名称                       |
-| protocols      |    否    | string[]                        | `['http']`   | 前端请求的类型，如 http，https，http 与 https                    |
-| environment    |    否    | string                          | `release`    | 发布环境. 网关环境: test, prepub 与 release                      |
-| usagePlan      |    否    | [UsagePlan](#UsagePlan)         |              | 使用计划配置                                                     |
-| auth           |    否    | [ApiAuth](#ApiAuth)             |              | API 密钥配置                                                     |
-| customDomain   |    否    | [CustomDomain](#CustomDomain)[] |              | 自定义 API 域名配置                                              |
-| enableCORS     |    否    | boolean                         | `false`      | 开启跨域。默认值为否。                                           |
-| serviceTimeout |    否    | number                          | `15`         | Api 超时时间，单位: 秒                                           |
-| isDisabled     |    否    | boolean                         | `false`      | 关闭自动创建 API 网关功能。默认值为否，即默认自动创建 API 网关。 |
+| 参数名称     | 是否必选 | 类型                            | 默认值       | 描述                                                             |
+| ------------ | :------: | :------------------------------ | :----------- | :--------------------------------------------------------------- |
+| id           |    否    | string                          |              | API 网关服务 ID, 如果存在将使用这个 API 网关服务                 |
+| name         |    否    | string                          | `serverless` | API 网关服务名称, 默认创建一个新的服务名称                       |
+| protocols    |    否    | string[]                        | `['http']`   | 前端请求的类型，如 http，https，http 与 https                    |
+| environment  |    否    | string                          | `release`    | 发布环境. 网关环境: test, prepub 与 release                      |
+| usagePlan    |    否    | [UsagePlan](#UsagePlan)         |              | 使用计划配置                                                     |
+| auth         |    否    | [ApiAuth](#ApiAuth)             |              | API 密钥配置                                                     |
+| customDomain |    否    | [CustomDomain](#CustomDomain)[] |              | 自定义 API 域名配置                                              |
+| enableCORS   |    否    | boolean                         | `false`      | 开启跨域。默认值为否。                                           |
+| isDisabled   |    否    | boolean                         | `false`      | 关闭自动创建 API 网关功能。默认值为否，即默认自动创建 API 网关。 |
+| api          |    否    | [Api](#Api)                     |              | API 配置                                                         |
+
+##### Api
+
+| 参数名称  | 是否必选 | 类型    | 默认值     | 描述                   |
+| --------- | :------: | :------ | :--------- | :--------------------- |
+| name      |    否    | string  | `http_api` | 名称                   |
+| timeout   |    否    | number  | `15`       | Api 超时时间，单位: 秒 |
+| cors      |    否    | boolean | `true`     | 是否支持跨域           |
+| qualifier |    否    | string  | `$DEFAULT` | 关联的函数版本         |
 
 ##### UsagePlan
 

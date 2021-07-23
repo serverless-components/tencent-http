@@ -1,7 +1,4 @@
-app: appDemo
-stage: dev
-
-component: thinkphp@dev
+component: http
 name: thinkphpDemo
 
 inputs:
@@ -9,6 +6,8 @@ inputs:
   region: ap-guangzhou
   faas:
     name: ${name}
+    framework: thinkphp
+    runtime: Php7
     environments:
       - key: APP_ENV
         value: production
@@ -16,4 +15,3 @@ inputs:
     protocols:
       - http
       - https
-    environment: release

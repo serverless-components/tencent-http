@@ -7,6 +7,7 @@ export interface FaasOutputs {
   name: string;
   runtime: string;
   namespace: string;
+  type?: string;
 }
 export type ApigwOutputs = {
   created?: boolean;

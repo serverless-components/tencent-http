@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export SERVERLESS=1
+
+# HTTP 直通函数由于是基于 docker 镜像运行，所以必须监听地址为 0.0.0.0，并且端口为 9000
+# 云端可执行文件路径 /var/lang/php7/bin/php
+export PATH=/var/lang/php7/bin:$PATH
+
+export VIEW_COMPILED_PATH=/tmp/runtime/view
+
+mkdir -p /tmp/runtime
+
+php think run --host 0.0.0.0 --port 9000 -n

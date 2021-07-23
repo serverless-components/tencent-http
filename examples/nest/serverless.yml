@@ -1,17 +1,16 @@
-app: appDemo
-stage: dev
-
-component: nestjs@dev
+component: http
 name: nestDemo
 
 inputs:
   src:
-    src: ./
+    dist: ./
+    hook: npm run build
     exclude:
       - .env
-  functionConf:
+  faas:
+    framework: nest
     name: ${name}
-  apigatewayConf:
+  apigw:
     protocols:
       - http
       - https

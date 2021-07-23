@@ -1,6 +1,6 @@
 import * as AdmZip from 'adm-zip';
 import { CdnDeployInputs } from 'tencent-component-toolkit/lib/modules/cdn/interface';
-import { ApiTypeError } from 'tencent-component-toolkit/lib/utils/error';
+import { ApiError } from 'tencent-component-toolkit/lib/utils/error';
 import {
   KeyValue,
   Inputs,
@@ -24,6 +24,7 @@ import {
   getDefaultServiceDescription,
 } from './utils';
 
+// format static cos inputs
 export const formatStaticCosInputs = async (
   cosConf: CosInputs,
   appId: string,
@@ -71,14 +72,14 @@ export const formatStaticCosInputs = async (
       staticCosInputs,
     };
   } catch (e) {
-    throw new ApiTypeError(
-      `UTILS_${CONFIGS.framework.toUpperCase()}_prepareStaticCosInputs`,
-      e.message,
-      e.stack,
-    );
+    throw new ApiError({
+      type: `UTILS_${CONFIGS.framework.toUpperCase()}_prepareStaticCosInputs`,
+      message: e.message,
+    });
   }
 };
 
+// format cdn inputs
 export const formatStaticCdnInputs = async (cdnConf: CdnInputs, origin: string) => {
   const CONFIGS = getConfig(process.env.FRAMEWORK as Framework);
 
@@ -97,10 +98,10 @@ export const formatStaticCdnInputs = async (cdnConf: CdnInputs, origin: string) 
     // using these default configs, for making user's config more simple
     cdnInputs.forceRedirect = cdnConf.forceRedirect || CONFIGS.defaultCdnConfig.forceRedirect;
     if (!cdnConf.https.certId) {
-      throw new ApiTypeError(
-        `PARAMETER_${CONFIGS.framework.toUpperCase()}_HTTPS`,
-        'https.certId is required',
-      );
+      throw new ApiError({
+        type: `PARAMETER_${CONFIGS.framework.toUpperCase()}_HTTPS`,
+        message: 'https.certId is required',
+      });
     }
     cdnInputs.https = {
       ...CONFIGS.defaultCdnConfig.https,
@@ -126,33 +127,22 @@ export const formatStaticCdnInputs = async (cdnConf: CdnInputs, origin: string) 
 // transfer yaml config to sdk inputs
 const yamlToSdkInputs = (state: State, faasConfig: FaasInputs, apigwConfig: ApigwInputs) => {
   const CONFIGS = getConfig(process.env.FRAMEWORK as Framework);
+  const { framework } = CONFIGS;
 
   const faasSdkInputs = deepClone(faasConfig) as FaasSdkInputs;
   const apigwSdkInputs = deepClone(apigwConfig) as ApigwSdkInputs;
   // chenck state function name
   const stateFaasName = state.faas && state.faas.name;
-  // transfer faas config
-  faasSdkInputs.name = faasConfig.name || stateFaasName || getDefaultFunctionName();
+  faasSdkInputs.name = faasConfig.name || stateFaasName || getDefaultFunctionName(framework);
 
-  const { defaultEnvs } = CONFIGS;
+  const { defaultEnvs = [] } = CONFIGS;
   faasConfig.environments = (faasConfig.environments || []).concat(defaultEnvs);
   const environments = deepClone(faasConfig.environments);
-
-  if (!faasConfig.bootstrap?.cmd) {
-    throw new ApiTypeError('PARAMETER_ERROR', 'bootstrap.cmd is required');
-  }
-  environments.push({
-    key: 'SLS_START_CMD',
-    value: faasConfig.bootstrap?.cmd,
-  });
-  environments.push({
-    key: 'SLS_SERVER_PORT',
-    value: faasConfig.bootstrap?.port ?? 9000,
-  });
 
   faasSdkInputs.environment = {
     variables: {},
   };
+
   environments.forEach((item: KeyValue) => {
     faasSdkInputs.environment!.variables[item.key] = item.value;
   });
@@ -174,15 +164,17 @@ const yamlToSdkInputs = (state: State, faasConfig: FaasInputs, apigwConfig: Apig
   apigwSdkInputs.serviceId = apigwConfig.id || stateApigwId;
   apigwSdkInputs.serviceName = apigwConfig.name || getDefaultServiceName();
   apigwSdkInputs.serviceDesc = apigwConfig.description || getDefaultServiceDescription();
+  const { api = {} } = apigwConfig;
 
   apigwSdkInputs.endpoints = [
     {
-      path: '/',
-      apiName: 'index',
-      method: 'ANY',
-      enableCORS: apigwConfig.cors || true,
-      serviceTimeout: apigwConfig.timeout || 15,
+      path: api.path || '/',
+      apiName: api.name || 'http_api',
+      method: api.method || 'ANY',
+      enableCORS: api.cors ?? true,
+      serviceTimeout: api.timeout ?? 15,
       function: {
+        functionType: 'HTTP',
         isIntegratedResponse: true,
         functionQualifier: apigwConfig.qualifier || '$DEFAULT',
         functionName: faasSdkInputs.name,
@@ -207,6 +199,7 @@ const yamlToSdkInputs = (state: State, faasConfig: FaasInputs, apigwConfig: Apig
   return { faasConfig: faasSdkInputs, apigwConfig: apigwSdkInputs };
 };
 
+// format faas and apigw inputs
 export const formatInputs = (state: State, inputs: Partial<Inputs> = {}) => {
   const CONFIGS = getConfig(process.env.FRAMEWORK as Framework);
 
@@ -222,8 +215,9 @@ export const formatInputs = (state: State, inputs: Partial<Inputs> = {}) => {
     },
     region: region,
     role: tempFaasConfig.role ?? '',
-    handler: tempFaasConfig.handler ?? CONFIGS.handler,
-    runtime: CONFIGS.runtime,
+    type: 'web',
+    handler: CONFIGS.handler,
+    runtime: tempFaasConfig.runtime ?? CONFIGS.runtime,
     namespace: tempFaasConfig.namespace ?? CONFIGS.namespace,
     description: tempFaasConfig.description ?? CONFIGS.description,
     timeout: tempFaasConfig.timeout ?? CONFIGS.timeout,

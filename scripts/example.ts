@@ -5,7 +5,7 @@ import * as chalk from 'chalk';
 import { program } from 'commander';
 import { prompt } from 'inquirer';
 import * as open from 'open';
-import { Framework } from '../typings';
+import { Framework, ServerlessConfig } from '../typings';
 import { FRAMEWORKS } from './config';
 import { getExampleConfig, getServerlessSdk } from './utils';
 
@@ -76,20 +76,38 @@ async function deployExample(framework: Framework, options: Options, spinner: or
   }
 
   yamlConfig.org = appId;
+  yamlConfig.app = yamlConfig.app || yamlConfig.name;
+  yamlConfig.stage = yamlConfig.stage || 'dev';
 
   if (options.dev) {
-    yamlConfig.component = `${framework}@dev`;
+    yamlConfig.component = `http@dev`;
   } else {
-    yamlConfig.component = framework;
+    yamlConfig.component = 'http';
   }
 
   const sdk = getServerlessSdk(appId, appId);
+
+  async function retrySlsAction(action: string, yamlConf: ServerlessConfig, cred: any) {
+    try {
+      const res = await sdk[action](yamlConf, cred);
+      return res;
+    } catch (e) {
+      if (e.message.indexOf('An internal error has occurred') > -1) {
+        return new Promise((resolve) => {
+          setTimeout(async () => {
+            const res = await sdk[action](yamlConf, cred);
+            resolve(res);
+          }, 3000);
+        });
+      }
+    }
+  }
 
   const stage = options.env || 'dev';
   process.env.SERVERLESS_PLATFORM_STAGE = stage;
 
   if (stage === 'dev') {
-    yamlConfig.component = `${framework}@dev`;
+    yamlConfig.component = `http@dev`;
   }
 
   // merge customize inputs parameters
@@ -102,12 +120,12 @@ async function deployExample(framework: Framework, options: Options, spinner: or
   // remove deploy instance
   if (options.remove) {
     spinner.info(`[${yamlConfig.component}] Removing example (${stage})...`);
-    await sdk.remove(yamlConfig, credentials);
+    await retrySlsAction('remove', yamlConfig, credentials);
     spinner.succeed(`[${yamlConfig.component}] Remove example success`);
   } else {
     // deploy
     spinner.info(`[${yamlConfig.component}] Deploying example (${stage})...`);
-    const res = await sdk.deploy(yamlConfig, credentials);
+    const res = await retrySlsAction('deploy', yamlConfig, credentials);
     spinner.succeed(`[${yamlConfig.component}] Deploy example success`);
 
     console.log(

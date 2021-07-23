@@ -1,5 +1,5 @@
 import { ServerlessComponent } from './index';
-import { ApiTypeError } from 'tencent-component-toolkit/lib/utils/error';
+import { ApiError } from 'tencent-component-toolkit/lib/utils/error';
 import * as download from 'download';
 import * as fse from 'fs-extra';
 import * as path from 'path';
@@ -33,8 +33,8 @@ export const getDefaultProtocol = (protocols: string[]) => {
   return String(protocols).includes('https') ? 'https' : 'http';
 };
 
-export const getDefaultFunctionName = () => {
-  return `http_component_${generateId()}`;
+export const getDefaultFunctionName = (framework?: string) => {
+  return `${framework || 'http'}_${generateId()}`;
 };
 
 export const getDefaultServiceName = () => {
@@ -42,7 +42,7 @@ export const getDefaultServiceName = () => {
 };
 
 export const getDefaultServiceDescription = () => {
-  return 'Created by Serverless Component';
+  return 'Created by Serverless';
 };
 
 export const removeAppid = (str: string, appid: string) => {
@@ -55,10 +55,16 @@ export const removeAppid = (str: string, appid: string) => {
 
 export const validateTraffic = (num: number | any) => {
   if (getType(num) !== 'Number') {
-    throw new ApiTypeError(`PARAMETER_HTTP_TRAFFIC`, 'traffic must be a number');
+    throw new ApiError({
+      type: `PARAMETER_HTTP_TRAFFIC`,
+      message: 'traffic must be a number',
+    });
   }
   if (num < 0 || num > 1) {
-    throw new ApiTypeError(`PARAMETER_HTTP_TRAFFIC`, 'traffic must be a number between 0 and 1');
+    throw new ApiError({
+      type: `PARAMETER_HTTP_TRAFFIC`,
+      message: 'traffic must be a number between 0 and 1',
+    });
   }
   return true;
 };
@@ -74,12 +80,24 @@ const generatePublicDir = (zipPath: string) => {
   }
 };
 
+export const initializeBootstrap = (framework: string, zipPath: string) => {
+  const bsFilename = 'scf_bootstrap';
+  const zip = new AdmZip(zipPath);
+  const entries = zip.getEntries();
+  const [entry] = entries.filter((e) => e.entryName === bsFilename);
+  // 如果不存在，自动创建
+  if (!entry) {
+    const bootstrapFile = path.join(__dirname, '_shims', framework, bsFilename);
+    zip.addFile(bsFilename, fse.readFileSync(bootstrapFile), '', 0o755);
+    zip.writeZip();
+  }
+};
+
 export const getCodeZipPath = async (inputs: FaasSdkInputs) => {
   const CONFIGS = getConfig(process.env.FRAMEWORK as Framework);
   const { framework } = CONFIGS;
   console.log(`Packaging ${framework} application`);
 
-  // unzip source zip file
   let zipPath;
   if (!inputs.code?.src) {
     // add default template
@@ -92,11 +110,15 @@ export const getCodeZipPath = async (inputs: FaasSdkInputs) => {
         filename: `${filename}.zip`,
       });
     } catch (e) {
-      throw new ApiTypeError(`DOWNLOAD_TEMPLATE`, 'Download default template failed.');
+      throw new ApiError({
+        type: `DOWNLOAD_TEMPLATE`,
+        message: 'Download default template failed.',
+      });
     }
     zipPath = `${downloadPath}/${filename}.zip`;
   } else {
     zipPath = inputs.code.src;
+    initializeBootstrap(framework, zipPath);
   }
 
   // 自动注入 public 目录
@@ -105,21 +127,6 @@ export const getCodeZipPath = async (inputs: FaasSdkInputs) => {
   }
 
   return zipPath;
-};
-
-export const modifyDjangoEntryFile = (projectName: string, shimPath: string) => {
-  console.log(`Modifying django entry file for project ${projectName}`);
-  const compShimsPath = `/tmp/_shims`;
-  const fixturePath = path.join(__dirname, '_fixtures/python');
-  fse.copySync(shimPath, compShimsPath);
-  fse.copySync(fixturePath, compShimsPath);
-
-  // replace {{django_project}} in _shims/index.py to djangoProjectName
-  const indexPath = path.join(compShimsPath, 'sl_handler.py');
-  const indexPyFile = fse.readFileSync(indexPath, 'utf8');
-  const replacedFile = indexPyFile.replace(eval('/{{django_project}}/g'), projectName);
-  fse.writeFileSync(indexPath, replacedFile);
-  return compShimsPath;
 };
 
 export const getDirFiles = (dirPath: string) => {

@@ -1,7 +1,7 @@
 app: appDemo
 stage: dev
 
-component: http@dev
+component: http
 name: koaDemo
 
 inputs:
@@ -11,9 +11,6 @@ inputs:
       - .env
   faas:
     framework: koa
-    bootstrap:
-      cmd: node app.js
-      port: 9000
     name: ${name}
   apigw:
     protocols:

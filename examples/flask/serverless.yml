@@ -1,7 +1,4 @@
-app: appDemo
-stage: dev
-
-component: flask@dev
+component: http
 name: flaskDemo
 
 inputs:
@@ -15,11 +12,10 @@ inputs:
       - '__pycache__/**'
   region: ap-guangzhou
   faas:
-    startCmd: python -m flask run --port=9000
-    serverPort: 9000
+    framework: flask
     name: ${name}
+    runtime: Python3.6
   apigw:
     protocols:
       - http
       - https
-    environment: release
