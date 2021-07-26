@@ -1,6 +1,6 @@
 ## 腾讯云 HTTP 框架组件
 
-通过使用 [Tencent Serverless Framework](https://github.com/serverless/components/tree/cloud)，基于云上 Serverless 服务（如网关、云函数等），实现“0”配置，便捷开发，极速部署你的 Web 框架应用，组件支持丰富的配置扩展，提供了目前最易用、低成本并且弹性伸缩的 Web 框架项目开发/托管能力。
+通过使用 [Tencent Serverless](https://github.com/serverless/components/tree/cloud)，基于云上 Serverless 服务（如网关、云函数等），实现便捷开发，极速部署你的 Web 框架应用，组件支持丰富的配置扩展，提供了目前最易用、低成本并且弹性伸缩的 Web 框架项目开发/托管能力。
 
 特性介绍：
 
@@ -21,9 +21,8 @@
 2. [**创建**](#2-创建)
 3. [**配置**](#3-配置)
 4. [**部署**](#4-部署)
-5. [**开发调试**](#5-开发调试)
-6. [**查看状态**](#6-查看状态)
-7. [**移除**](#7-移除)
+5. [**查看状态**](#5-查看状态)
+6. [**移除**](#6-移除)
 
 更多资源：
 
@@ -32,7 +31,7 @@
 
 ### 1. 安装
 
-通过 npm 安装最新版本的 Serverless Framework
+通过 npm 安装最新版本的 Serverless CLI
 
 ```bash
 $ npm install -g serverless
@@ -91,8 +90,8 @@ inputs:
     src: ./
   region: ap-guangzhou
   faas:
+    framework: express
     name: expressDemo
-    runtime: Nodejs10.15
   apigw:
     protocols:
       - http
@@ -117,17 +116,7 @@ $ sls deploy
 
 - [点击此处查看输出文档](./docs/output.md)
 
-### 5. 开发调试
-
-部署了 Express.js 应用后，可以通过开发调试能力对该项目进行二次开发，从而开发一个生产应用。在本地修改和更新代码后，不需要每次都运行 `serverless deploy` 命令来反复部署。你可以直接通过 `serverless dev` 命令对本地代码的改动进行检测和自动上传。
-
-`serverless dev` 同时支持实时输出云端日志，每次部署完毕后，对项目进行访问，即可在命令行中实时输出调用日志，便于查看业务情况和排障。
-
-除了实时日志输出之外，针对 Node.js 应用，当前也支持云端调试能力。在开启 `serverless dev` 命令之后，将会自动监听远端端口，并将函数的超时时间临时配置为 900s。此时你可以通过访问 chrome://inspect/#devices 查找远端的调试路径，并直接对云端代码进行断点等调试。在调试模式结束后，需要再次部署从而将代码更新并将超时时间设置为原来的值。详情参考[开发模式和云端调试](https://cloud.tencent.com/document/product/1154/43220)。
-
-> 注意：目前开发调试只支持 `Node.js` 框架。
-
-### 6. 查看状态
+### 5. 查看状态
 
 在`serverless.yml`文件所在的目录下，通过如下命令查看部署状态：
 
@@ -135,7 +124,7 @@ $ sls deploy
 $ serverless info
 ```
 
-### 7. 移除
+### 6. 移除
 
 在`serverless.yml`文件所在的目录下，通过以下命令移除部署的 Express 服务。移除后该组件会对应删除云上部署时所创建的所有相关资源。
 
@@ -153,7 +142,7 @@ Web 框架组件将在腾讯云账户中使用到如下 Serverless 服务：
 - [x] **SCF 云函数** - 云函数将承载 Web 框架应用。
 - [x] **CAM 访问控制** - 该组件会创建默认 CAM 角色用于授权访问关联资源。
 - [x] **COS 对象存储** - 为确保上传速度和质量，云函数压缩并上传代码时，会默认将代码包存储在特定命名的 COS 桶中。
-- [x] **SSL 证书服务** - 如果你在 yaml 文件中配置了 `apigatewayConf.customDomains` 字段，需要做自定义域名绑定并开启 HTTPS 时，也会用到证书管理服务和域名服务。Serverless Framework 会根据已经备案的域名自动申请并配置 SSL 证书。
+- [x] **SSL 证书服务** - 如果你在 yaml 文件中配置了 `apigw.customDomains` 字段，需要做自定义域名绑定并开启 HTTPS 时，也会用到证书管理服务和域名服务。Serverless Framework 会根据已经备案的域名自动申请并配置 SSL 证书。
 
 ## 账号配置
 
