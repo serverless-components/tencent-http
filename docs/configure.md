@@ -19,6 +19,7 @@ inputs:
   #   object: cos.zip  # bucket key 指定存储桶内的文件
   faas: # 函数配置相关
     framework: express
+    runtime: Nodejs12.16
     name: webDemo # 云函数名称
     timeout: 10 # 超时时间，单位秒
     memorySize: 128 # 内存大小，单位MB
@@ -111,16 +112,17 @@ inputs:
 
 函数配置
 
-| 参数名称     | 是否必选 | 类型                          | 默认值 | 描述                                                                            |
-| ------------ | :------: | :---------------------------- | :----: | :------------------------------------------------------------------------------ |
-| framework    |    是    | string                        |        | 项目框架名称，比如 `express`                                                    |
-| name         |    否    | string                        |        | 函数名称                                                                        |
-| timeout      |    否    | number                        |  `3`   | 函数最长执行时间，单位为秒，可选值范围 1-900 秒，默认为 3 秒                    |
-| memorySize   |    否    | number                        | `128`  | 函数运行时内存大小，默认为 128M，可选范围 64、128MB-3072MB，并且以 128MB 为阶梯 |
-| environments |    否    | [Environment](#Environment)[] |        | 函数的环境变量                                                                  |
-| vpc          |    否    | [Vpc](#Vpc)                   |        | 函数的 VPC 配置                                                                 |
-| layers       |    否    | [Layer](#Layer)[]             |        | 云函数绑定的 layer                                                              |
-| tags         |    否    | object                        |        | 云函数标签，`key-value` 形式配置                                                |
+| 参数名称     | 是否必选 | 类型                          |    默认值     | 描述                                                                            |
+| ------------ | :------: | :---------------------------- | :-----------: | :------------------------------------------------------------------------------ |
+| framework    |    是    | string                        |               | 项目框架名称，比如 `express`                                                    |
+| runtime      |    否    | string                        | `Nodejs12.16` | 运行环境                                                                        |
+| name         |    否    | string                        |               | 函数名称                                                                        |
+| timeout      |    否    | number                        |      `3`      | 函数最长执行时间，单位为秒，可选值范围 1-900 秒，默认为 3 秒                    |
+| memorySize   |    否    | number                        |     `128`     | 函数运行时内存大小，默认为 128M，可选范围 64、128MB-3072MB，并且以 128MB 为阶梯 |
+| environments |    否    | [Environment](#Environment)[] |               | 函数的环境变量                                                                  |
+| vpc          |    否    | [Vpc](#Vpc)                   |               | 函数的 VPC 配置                                                                 |
+| layers       |    否    | [Layer](#Layer)[]             |               | 云函数绑定的 layer                                                              |
+| tags         |    否    | object                        |               | 云函数标签，`key-value` 形式配置                                                |
 
 > 此处只是列举，`faas` 参数支持 [scf][scf-config] 组件的所有基础配置（ `events` 除外）
 
