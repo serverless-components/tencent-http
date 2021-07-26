@@ -1,5 +1,5 @@
 component: http
-name: nestDemo
+name: nuxtDemo
 
 inputs:
   src:
@@ -9,7 +9,7 @@ inputs:
       - .env
   faas:
     runtime: Nodejs12.16
-    framework: nest
+    framework: nuxtjs
     name: ${name}
   apigw:
     protocols:

@@ -131,9 +131,9 @@ inputs:
 - [x] express
 - [x] koa
 - [x] egg
-- [x] next
-- [x] nuxt
-- [x] nest
+- [x] nextjs
+- [x] nuxtjs
+- [x] nestjs
 - [x] flask
 - [x] django
 - [x] laravel

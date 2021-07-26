@@ -14,16 +14,16 @@ const frameworks: Record<Framework, { [prop: string]: any }> = {
   egg: {
     defaultStatics: [{ src: 'public', targetDir: '/' }],
   },
-  nest: {
+  nestjs: {
     defaultStatics: [{ src: 'public', targetDir: '/' }],
   },
-  next: {
+  nextjs: {
     defaultStatics: [
       { src: '.next/static', targetDir: '/_next/static' },
       { src: 'public', targetDir: '/' },
     ],
   },
-  nuxt: {
+  nuxtjs: {
     defaultStatics: [
       { src: '.nuxt/dist/client', targetDir: '/' },
       { src: 'static', targetDir: '/' },

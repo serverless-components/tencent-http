@@ -1,5 +1,5 @@
 component: http
-name: nextDemo
+name: nestDemo
 
 inputs:
   src:
@@ -9,7 +9,7 @@ inputs:
       - .env
   faas:
     runtime: Nodejs12.16
-    framework: next
+    framework: nestjs
     name: ${name}
   apigw:
     protocols:
