@@ -42,7 +42,7 @@ const CONFIGS: DefaultConfig = {
   description: 'Created by Serverless Component',
   handler: 'scf_bootstrap',
   timeout: 10,
-  memorySize: 128,
+  memorySize: 512,
   namespace: 'default',
   runtime: 'Nodejs12.16',
   defaultEnvs: [
