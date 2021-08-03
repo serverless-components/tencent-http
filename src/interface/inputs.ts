@@ -5,7 +5,7 @@ export interface KeyValue {
   value: string;
 }
 
-export interface FaasInputs {
+export interface FaasBaseInputs {
   type?: 'web' | 'event';
   framework?: Framework;
   code?: { bucket?: string; object?: string; src?: string };
@@ -16,7 +16,9 @@ export interface FaasInputs {
   runtime?: string;
   namespace?: string;
   description?: string;
+}
 
+export interface FaasInputs extends FaasBaseInputs {
   environments?: KeyValue[];
 
   layers?: { name: string; version: number }[];
@@ -28,18 +30,12 @@ export interface FaasInputs {
     vpcId: string;
     subnetId: string;
   };
+
+  bootstrap?: {
+    cmd: string;
+  };
 }
-export interface FaasSdkInputs {
-  code?: { bucket?: string; object?: string; src?: string };
-
-  name?: string;
-  role?: string;
-  handler?: string;
-  runtime?: string;
-  namespace?: string;
-  description?: string;
-
-  layers?: { name: string; version: number }[];
+export interface FaasSdkInputs extends FaasBaseInputs {
   cfs?: { cfsId: string }[];
   timeout?: number;
   memorySize?: number;
@@ -53,6 +49,9 @@ export interface FaasSdkInputs {
   environment?: {
     variables: Record<string, string>;
   };
+
+  // 启动命令文件的自定义内容
+  bootstrapContent?: string;
 }
 
 export interface ApigwInputs {
