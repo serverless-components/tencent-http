@@ -80,17 +80,24 @@ const generatePublicDir = (zipPath: string) => {
   }
 };
 
-export const initializeBootstrap = (framework: string, zipPath: string) => {
+/**
+ * 初始化 scf_bootstrap 文件
+ */
+export const initializeBootstrap = (framework: string, zipPath: string, content?: string) => {
   const bsFilename = 'scf_bootstrap';
   const zip = new AdmZip(zipPath);
-  const entries = zip.getEntries();
-  const [entry] = entries.filter((e) => e.entryName === bsFilename);
-  // 如果不存在，自动创建
-  if (!entry) {
-    const bootstrapFile = path.join(__dirname, '_shims', framework, bsFilename);
-    zip.addFile(bsFilename, fse.readFileSync(bootstrapFile), '', 0o755);
-    zip.writeZip();
+  if (content) {
+    zip.addFile(bsFilename, Buffer.from(content, 'utf8'), '', 0o755);
+  } else {
+    const entries = zip.getEntries();
+    const [entry] = entries.filter((e) => e.entryName === bsFilename);
+    // 如果不存在，自动创建
+    if (!entry) {
+      const bootstrapFile = path.join(__dirname, '_shims', framework, bsFilename);
+      zip.addFile(bsFilename, fse.readFileSync(bootstrapFile), '', 0o755);
+    }
   }
+  zip.writeZip();
 };
 
 export const getCodeZipPath = async (inputs: FaasSdkInputs) => {
@@ -100,7 +107,7 @@ export const getCodeZipPath = async (inputs: FaasSdkInputs) => {
 
   let zipPath;
   if (!inputs.code?.src) {
-    // add default template
+    // 添加默认代码模板
     const downloadPath = `/tmp/${generateId()}`;
     const filename = 'template';
 
@@ -119,7 +126,7 @@ export const getCodeZipPath = async (inputs: FaasSdkInputs) => {
   } else {
     zipPath = inputs.code.src;
   }
-  initializeBootstrap(framework, zipPath);
+  initializeBootstrap(framework, zipPath, inputs.bootstrapContent);
 
   // 自动注入 public 目录
   if (framework === 'egg') {

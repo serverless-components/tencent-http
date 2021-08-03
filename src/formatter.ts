@@ -224,6 +224,7 @@ export const formatInputs = (state: State, inputs: Partial<Inputs> = {}) => {
     memorySize: tempFaasConfig.memorySize ?? CONFIGS.memorySize,
     layers: tempFaasConfig.layers ?? [],
     cfs: tempFaasConfig.cfs ?? [],
+    bootstrapContent: tempFaasConfig.bootstrap?.cmd ?? '',
   });
 
   // 对apigw inputs进行标准化
