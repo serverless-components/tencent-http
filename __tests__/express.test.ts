@@ -13,6 +13,7 @@ interface YamlConfig {
   inputs: Inputs;
 }
 
+const cmd = encodeURIComponent('#!/usr/bin/env bash\n\n/var/lang/node12/bin/node app.js');
 const instanceYaml: YamlConfig = {
   org: 'orgDemo',
   app: 'appDemo',
@@ -23,6 +24,10 @@ const instanceYaml: YamlConfig = {
     faas: {
       framework: 'express',
       name: `express-intergration-test-${generateId()}`,
+      bootstrap: { cmd },
+    },
+    apigw: {
+      protocols: ['http', 'https'],
     },
   },
 };
@@ -48,6 +53,8 @@ describe('Express', () => {
     expect(instance.outputs.apigw.environment).toEqual('release');
     expect(instance.outputs.faas).toBeDefined();
     expect(instance.outputs.faas.runtime).toEqual('Nodejs12.16');
+    expect(instance.inputs.faas.bootstrap).toBeDefined();
+    expect(instance.inputs.faas.bootstrap.cmd).toEqual(cmd);
   });
 
   it('update source code', async () => {

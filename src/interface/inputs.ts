@@ -73,7 +73,7 @@ export interface ApigwInputs {
     isForcedHttps: boolean;
   }[];
 
-  api: {
+  api?: {
     path?: string;
     method?: string;
     name?: string;

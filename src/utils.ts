@@ -87,10 +87,11 @@ export const initializeBootstrap = (framework: string, zipPath: string, content?
   const bsFilename = 'scf_bootstrap';
   const zip = new AdmZip(zipPath);
   if (content) {
-    zip.addFile(bsFilename, Buffer.from(content, 'utf8'), '', 0o755);
+    const decodeContent = decodeURIComponent(content);
+    zip.addFile(bsFilename, Buffer.from(decodeContent, 'utf8'), '', 0o755);
   } else {
     const entries = zip.getEntries();
-    const [entry] = entries.filter((e) => e.entryName === bsFilename);
+    const [entry] = entries.filter((e: any) => e.entryName === bsFilename);
     // 如果不存在，自动创建
     if (!entry) {
       const bootstrapFile = path.join(__dirname, '_shims', framework, bsFilename);
