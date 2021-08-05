@@ -49,7 +49,7 @@
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/npm": "^7.0.4",
     "@semantic-release/release-notes-generator": "^9.0.1",
-    "@serverless/platform-client-china": "^2.2.0",
+    "@serverless/platform-client-china": "^2.2.1",
     "@types/fs-extra": "^9.0.6",
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.20",

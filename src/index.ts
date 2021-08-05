@@ -169,7 +169,7 @@ export class ServerlessComponent extends Component<State> {
       console.log(`Deploying static files`);
       // 1. deploy to cos
       const { staticCosInputs, bucket } = await formatStaticCosInputs(
-        inputs.cosConf,
+        inputs.cos,
         appId,
         zipPath,
         region,
@@ -183,7 +183,7 @@ export class ServerlessComponent extends Component<State> {
         bucket: '',
       };
       // flush bucket
-      if (inputs.cosConf.replace) {
+      if (inputs.cos.replace) {
         await cos.flushBucketFiles(bucket);
         try {
         } catch (e) {}
@@ -200,9 +200,9 @@ export class ServerlessComponent extends Component<State> {
       deployAssetsOutputss.cos = cosOutput;
 
       // 2. deploy cdn
-      if (inputs.cdnConf) {
+      if (inputs.cdn) {
         const cdn = new Cdn(credentials);
-        const cdnInputs = await formatStaticCdnInputs(inputs.cdnConf, cosOutput.cosOrigin);
+        const cdnInputs = await formatStaticCdnInputs(inputs.cdn, cosOutput.cosOrigin);
         console.log(`Starting deploy cdn ${cdnInputs.domain}`);
         const cdnDeployRes = await cdn.deploy(cdnInputs);
         const protocol = cdnInputs.https ? 'https' : 'http';

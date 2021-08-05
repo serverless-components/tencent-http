@@ -65,7 +65,7 @@ inputs:
       name: app_demo
       description: app description
   # 通常是为了部署 ssr 框架编译生成的静态文件
-  static:
+  assets:
     cos:
       bucket: static-bucket
       sources:
