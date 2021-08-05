@@ -13,6 +13,8 @@ dotenv.config({
   path: join(__dirname, '..', '.env.test'),
 });
 
+process.env.SERVERLESS_PLATFORM_VENDOR = 'tencent';
+
 const credentials = {
   tencent: {
     SecretId: process.env.TENCENT_SECRET_ID,

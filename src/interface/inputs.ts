@@ -211,8 +211,8 @@ export interface CdnInputs {
 }
 
 export interface AssetsInputs {
-  cosConf: CosInputs;
-  cdnConf?: CdnInputs;
+  cos: CosInputs;
+  cdn?: CdnInputs;
 }
 
 export interface Inputs {

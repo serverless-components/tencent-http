@@ -61,7 +61,7 @@ export const formatStaticCosInputs = async (
           src: `${staticPath}/${entryName}`,
           keyPrefix: curSource.targetDir || '/',
           // 通过设置 policy 来支持公网访问
-          policy: CONFIGS.getPolicy(region, bucket, appId),
+          policy: CONFIGS.getPolicy(region, bucketName, appId),
         };
 
         staticCosInputs.push(cosInputs);
