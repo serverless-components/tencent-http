@@ -48,6 +48,9 @@ inputs:
       - http
       - https
     environment: test
+    tags:
+      - key: tagKey
+        value: tagValue
     customDomains: # 自定义域名绑定
       - domain: abc.com # 待绑定的自定义的域名
         certId: abcdefg # 待绑定自定义域名的证书唯一 ID
@@ -122,7 +125,7 @@ inputs:
 | environments |    否    | [Environment](#Environment)[] |               | 函数的环境变量                                                                  |
 | vpc          |    否    | [Vpc](#Vpc)                   |               | 函数的 VPC 配置                                                                 |
 | layers       |    否    | [Layer](#Layer)[]             |               | 云函数绑定的 layer                                                              |
-| tags         |    否    | object                        |               | 云函数标签，`key-value` 形式配置                                                |
+| tags         |    否    | [Tag](#Tag)[]                 |               | 标签配置                                                                        |
 
 > 此处只是列举，`faas` 参数支持 [scf][scf-config] 组件的所有基础配置（ `events` 除外）
 
@@ -182,6 +185,7 @@ API 网关配置
 | enableCORS   |    否    | boolean                         | `false`      | 开启跨域。默认值为否。                                           |
 | isDisabled   |    否    | boolean                         | `false`      | 关闭自动创建 API 网关功能。默认值为否，即默认自动创建 API 网关。 |
 | api          |    否    | [Api](#Api)                     |              | API 配置                                                         |
+| tags         |    否    | [Tag](#Tag)[]                   |              | 标签配置                                                         |
 
 ##### Api
 
@@ -317,6 +321,15 @@ HTTPS 配置
 | -------- | :------: | :----: | :----: | :------------------------------------ |
 | certId   |    是    | string |        | 腾讯云托管域名证书 ID                 |
 | http2    |    是    | string |        | 是否开启 HTTP2，on： 开启，off： 关闭 |
+
+#### Tag
+
+标签配置
+
+| 参数名称 | 是否必选 |  类型  | 默认值 | 描述 |
+| -------- | :------: | :----: | :----: | :--- |
+| key      |    是    | string |        | 键   |
+| value    |    是    | string |        | 值   |
 
 <!-- links -->
 
