@@ -186,6 +186,7 @@ API 网关配置
 | isDisabled   |    否    | boolean                         | `false`      | 关闭自动创建 API 网关功能。默认值为否，即默认自动创建 API 网关。 |
 | api          |    否    | [Api](#Api)                     |              | API 配置                                                         |
 | tags         |    否    | [Tag](#Tag)[]                   |              | 标签配置                                                         |
+| ignoreUpdate |    否    | boolean                         | `false`      | 忽略 API 网关更新                                                |
 
 ##### Api
 
@@ -254,10 +255,11 @@ API 密钥配置
 
 COS 配置
 
-| 参数名称 | 是否必选 |        类型         |                  默认值                   | 描述                          |
-| -------- | :------: | :-----------------: | :---------------------------------------: | :---------------------------- |
-| bucket   |    是    |       string        |                                           | COS 存储同名称                |
-| sources  |    否    | [Source](#Source)[] | `[{ "src": "public", "targetDir": "/" }]` | 需要托管到 COS 的静态资源目录 |
+| 参数名称     | 是否必选 |        类型         |                  默认值                   | 描述                          |
+| ------------ | :------: | :-----------------: | :---------------------------------------: | :---------------------------- |
+| bucket       |    是    |       string        |                                           | COS 存储同名称                |
+| sources      |    否    | [Source](#Source)[] | `[{ "src": "public", "targetDir": "/" }]` | 需要托管到 COS 的静态资源目录 |
+| ignoreUpdate |    否    |       boolean       |                  `false`                  | 忽略 COS 网关更新             |
 
 ###### Source
 
@@ -302,6 +304,7 @@ http2: on certId: 'eGkM75xv'
 | refreshType   |    否    |             boolean             |  `delete`  | CDN 刷新类型，delete：刷新全部资源，flush：刷新变更资源    |
 | forceRedirect |    否    | [ForceRedirect](#ForceRedirect) |            | 访问协议强制跳转配置                                       |
 | https         |    否    |         [Https](#Https)         |            | https 配置                                                 |
+| ignoreUpdate  |    否    |             boolean             |  `false`   | 忽略 CDN 更新                                              |
 
 ###### ForceRedirect
 

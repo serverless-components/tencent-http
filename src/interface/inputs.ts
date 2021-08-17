@@ -57,6 +57,7 @@ export interface FaasSdkInputs extends FaasBaseInputs {
 export interface ApigwInputs {
   oldState?: any;
 
+  ignoreUpdate: boolean;
   isDisabled?: boolean;
   id?: string;
   name?: string;
@@ -192,12 +193,14 @@ export interface ApigwSdkInputs {
 }
 
 export interface CosInputs {
+  ignoreUpdate: boolean;
   replace?: boolean;
   bucket: string;
   sources?: { src: string; targetDir: string }[];
 }
 
 export interface CdnInputs {
+  ignoreUpdate: boolean;
   domain: string;
   area?: string;
   autoRefresh?: boolean;
