@@ -165,6 +165,12 @@ export class ServerlessComponent extends Component<State> {
       },
     };
 
+    const cosOutput: AssetsCosOutputs = {
+      region,
+      cosOrigin: '',
+      bucket: '',
+    };
+
     if (zipPath) {
       console.log(`Deploying static files`);
       // 1. deploy to cos
@@ -176,24 +182,28 @@ export class ServerlessComponent extends Component<State> {
       );
 
       const cos = new Cos(credentials, region);
-
-      const cosOutput: AssetsCosOutputs = {
-        region,
-        cosOrigin: '',
-        bucket: '',
-      };
       // flush bucket
+
       if (inputs.cos.replace) {
-        await cos.flushBucketFiles(bucket);
-        try {
-        } catch (e) {}
+        if (inputs.cos.ignoreUpdate) {
+          console.log('Ignore cos update (ignore flush)...');
+        } else {
+          await cos.flushBucketFiles(bucket);
+          try {
+          } catch (e) {}
+        }
       }
       for (let i = 0; i < staticCosInputs.length; i++) {
         const curInputs = staticCosInputs[i];
         console.log(`Starting deploy directory ${curInputs.src} to cos bucket ${curInputs.bucket}`);
-        const deployRes = await cos.deploy(curInputs);
+        if (inputs.cos.ignoreUpdate) {
+          console.log('Ignore cos update (ignore deploy)...');
+        } else {
+          const deployRes = await cos.deploy(curInputs);
+          cosOutput.bucket = deployRes.bucket;
+        }
         cosOutput.cosOrigin = `${curInputs.bucket}.cos.${region}.myqcloud.com`;
-        cosOutput.bucket = deployRes.bucket;
+
         cosOutput.url = `https://${curInputs.bucket}.cos.${region}.myqcloud.com`;
         console.log(`Deploy directory ${curInputs.src} to cos bucket ${curInputs.bucket} success`);
       }
@@ -201,19 +211,24 @@ export class ServerlessComponent extends Component<State> {
 
       // 2. deploy cdn
       if (inputs.cdn) {
-        const cdn = new Cdn(credentials);
-        const cdnInputs = await formatStaticCdnInputs(inputs.cdn, cosOutput.cosOrigin);
-        console.log(`Starting deploy cdn ${cdnInputs.domain}`);
-        const cdnDeployRes = await cdn.deploy(cdnInputs);
-        const protocol = cdnInputs.https ? 'https' : 'http';
-        const cdnOutput = {
-          domain: cdnDeployRes.domain,
-          url: `${protocol}://${cdnDeployRes.domain}`,
-          cname: cdnDeployRes.cname,
-        };
-        deployAssetsOutputss.cdn = cdnOutput;
+        if (inputs.cdn.ignoreUpdate) {
+          console.log('Ignore cdn update...');
+        } else {
+          const cdn = new Cdn(credentials);
 
-        console.log(`Deploy cdn ${cdnInputs.domain} success`);
+          const cdnInputs = await formatStaticCdnInputs(inputs.cdn, cosOutput.cosOrigin);
+          console.log(`Starting deploy cdn ${cdnInputs.domain}`);
+          const cdnDeployRes = await cdn.deploy(cdnInputs);
+          const protocol = cdnInputs.https ? 'https' : 'http';
+          const cdnOutput = {
+            domain: cdnDeployRes.domain,
+            url: `${protocol}://${cdnDeployRes.domain}`,
+            cname: cdnDeployRes.cname,
+          };
+          deployAssetsOutputss.cdn = cdnOutput;
+
+          console.log(`Deploy cdn ${cdnInputs.domain} success`);
+        }
       }
 
       console.log(`Deployed static files success`);
@@ -230,7 +245,6 @@ export class ServerlessComponent extends Component<State> {
     const CONFIGS = getConfig(process.env.FRAMEWORK as Framework);
 
     console.log(`Deploying ${CONFIGS.framework} application`);
-
     const credentials = this.getCredentials();
 
     // 对Inputs内容进行标准化
@@ -248,7 +262,11 @@ export class ServerlessComponent extends Component<State> {
     outputs.faas = await this.deployFunction(credentials, faasConfig, region);
     // support apigatewayConf.isDisabled
     if (apigwConfig.isDisabled !== true) {
-      outputs.apigw = await this.deployApigw(credentials, apigwConfig, region);
+      if (inputs.apigw?.ignoreUpdate) {
+        console.log('Ignore apigw update...');
+      } else {
+        outputs.apigw = await this.deployApigw(credentials, apigwConfig, region);
+      }
     } else {
       this.state.apigw = {
         isDisabled: true,
