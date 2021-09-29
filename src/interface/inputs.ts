@@ -70,6 +70,7 @@ export interface ApigwInputs {
     protocols: ('http' | 'https')[];
     certId: string;
     customMap?: boolean;
+    isDefaultMapping?: boolean;
     pathMap: [];
     isForcedHttps: boolean;
   }[];

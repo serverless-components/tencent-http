@@ -188,7 +188,7 @@ const yamlToSdkInputs = (state: State, faasConfig: FaasInputs, apigwConfig: Apig
       return {
         domain: item.domain,
         certificateId: item.certId,
-        isDefaultMapping: !item.customMap,
+        isDefaultMapping: item.customMap == undefined ? !item.customMap : item.isDefaultMapping,
         pathMappingSet: item.pathMap,
         protocols: item.protocols,
         isForcedHttps: item.isForcedHttps,
