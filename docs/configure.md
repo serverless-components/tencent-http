@@ -181,7 +181,7 @@ API 网关配置
 | environment  |    否    | string                          | `release`    | 发布环境. 网关环境: test, prepub 与 release                      |
 | usagePlan    |    否    | [UsagePlan](#UsagePlan)         |              | 使用计划配置                                                     |
 | auth         |    否    | [ApiAuth](#ApiAuth)             |              | API 密钥配置                                                     |
-| customDomain |    否    | [CustomDomain](#CustomDomain)[] |              | 自定义 API 域名配置                                              |
+| customDomains|    否    | [CustomDomain](#CustomDomain)[] |              | 自定义 API 域名配置                                              |
 | enableCORS   |    否    | boolean                         | `false`      | 开启跨域。默认值为否。                                           |
 | isDisabled   |    否    | boolean                         | `false`      | 关闭自动创建 API 网关功能。默认值为否，即默认自动创建 API 网关。 |
 | api          |    否    | [Api](#Api)                     |              | API 配置                                                         |
@@ -190,12 +190,12 @@ API 网关配置
 
 ##### Api
 
-| 参数名称  | 是否必选 | 类型    | 默认值     | 描述                   |
-| --------- | :------: | :------ | :--------- | :--------------------- |
-| name      |    否    | string  | `http_api` | 名称                   |
-| timeout   |    否    | number  | `15`       | Api 超时时间，单位: 秒 |
-| cors      |    否    | boolean | `true`     | 是否支持跨域           |
-| qualifier |    否    | string  | `$DEFAULT` | 关联的函数版本         |
+| 参数名称  | 是否必选 | 类型    | 默认值     | 描述                                             |
+| --------- | :------: | :------ | :--------- | :----------------------------------------------- |
+| name      |    否    | string  | `http_api` | 名称，校验规则：最长50个字符，支持 a-z，A-Z，0-9 |
+| timeout   |    否    | number  | `15`       | Api 超时时间，单位: 秒，时间范围：1-1800秒       |
+| cors      |    否    | boolean | `true`     | 是否支持跨域                                     |
+| qualifier |    否    | string  | `$DEFAULT` | 关联的函数版本                                   |
 
 ##### UsagePlan
 
@@ -237,10 +237,10 @@ API 密钥配置
 
 自定义路径映射
 
-| 参数名称    | 是否必选 | 类型   | Description    |
-| ----------- | :------: | :----- | :------------- |
-| path        |    是    | string | 自定义映射路径 |
-| environment |    是    | string | 自定义映射环境 |
+| 参数名称    | 是否必选 | 类型   | Description                                   |
+| ----------- | :------: | :----- | :-------------------------------------------- |
+| path        |    是    | string | 自定义映射路径                                |
+| environment |    是    | string | 自定义映射环境，有效值：test、prepub和release |
 
 ### Assets
 
@@ -301,7 +301,7 @@ http2: on certId: 'eGkM75xv'
 | domain        |    是    |             string              |            | CDN 域名                                                   |
 | area          |    否    |             string              | `mainland` | 加速区域，mainland: 大陆，overseas：海外，global：全球加速 |
 | autoRefresh   |    否    |             boolean             |   `true`   | 是否自动刷新 CDN                                           |
-| refreshType   |    否    |             boolean             |  `delete`  | CDN 刷新类型，delete：刷新全部资源，flush：刷新变更资源    |
+| refreshType   |    否    |             string              |  `delete`  | CDN 刷新类型，delete：刷新全部资源，flush：刷新变更资源    |
 | forceRedirect |    否    | [ForceRedirect](#ForceRedirect) |            | 访问协议强制跳转配置                                       |
 | https         |    否    |         [Https](#Https)         |            | https 配置                                                 |
 | ignoreUpdate  |    否    |             boolean             |  `false`   | 忽略 CDN 更新                                              |
