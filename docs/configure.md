@@ -173,29 +173,29 @@ VPC 配置
 
 API 网关配置
 
-| 参数名称     | 是否必选 | 类型                            | 默认值       | 描述                                                             |
-| ------------ | :------: | :------------------------------ | :----------- | :--------------------------------------------------------------- |
-| id           |    否    | string                          |              | API 网关服务 ID, 如果存在将使用这个 API 网关服务                 |
-| name         |    否    | string                          | `serverless` | API 网关服务名称, 默认创建一个新的服务名称                       |
-| protocols    |    否    | string[]                        | `['http']`   | 前端请求的类型，如 http，https，http 与 https                    |
-| environment  |    否    | string                          | `release`    | 发布环境. 网关环境: test, prepub 与 release                      |
-| usagePlan    |    否    | [UsagePlan](#UsagePlan)         |              | 使用计划配置                                                     |
-| auth         |    否    | [ApiAuth](#ApiAuth)             |              | API 密钥配置                                                     |
-| customDomains|    否    | [CustomDomain](#CustomDomain)[] |              | 自定义 API 域名配置                                              |
-| enableCORS   |    否    | boolean                         | `false`      | 开启跨域。默认值为否。                                           |
-| isDisabled   |    否    | boolean                         | `false`      | 关闭自动创建 API 网关功能。默认值为否，即默认自动创建 API 网关。 |
-| api          |    否    | [Api](#Api)                     |              | API 配置                                                         |
-| tags         |    否    | [Tag](#Tag)[]                   |              | 标签配置                                                         |
-| ignoreUpdate |    否    | boolean                         | `false`      | 忽略 API 网关更新                                                |
+| 参数名称      | 是否必选 | 类型                            | 默认值       | 描述                                                             |
+| ------------- | :------: | :------------------------------ | :----------- | :--------------------------------------------------------------- |
+| id            |    否    | string                          |              | API 网关服务 ID, 如果存在将使用这个 API 网关服务                 |
+| name          |    否    | string                          | `serverless` | API 网关服务名称, 默认创建一个新的服务名称                       |
+| protocols     |    否    | string[]                        | `['http']`   | 前端请求的类型，如 http，https，http 与 https                    |
+| environment   |    否    | string                          | `release`    | 发布环境. 网关环境: test, prepub 与 release                      |
+| usagePlan     |    否    | [UsagePlan](#UsagePlan)         |              | 使用计划配置                                                     |
+| auth          |    否    | [ApiAuth](#ApiAuth)             |              | API 密钥配置                                                     |
+| customDomains |    否    | [CustomDomain](#CustomDomain)[] |              | 自定义 API 域名配置                                              |
+| enableCORS    |    否    | boolean                         | `false`      | 开启跨域。默认值为否。                                           |
+| isDisabled    |    否    | boolean                         | `false`      | 关闭自动创建 API 网关功能。默认值为否，即默认自动创建 API 网关。 |
+| api           |    否    | [Api](#Api)                     |              | API 配置                                                         |
+| tags          |    否    | [Tag](#Tag)[]                   |              | 标签配置                                                         |
+| ignoreUpdate  |    否    | boolean                         | `false`      | 忽略 API 网关更新                                                |
 
 ##### Api
 
-| 参数名称  | 是否必选 | 类型    | 默认值     | 描述                                             |
-| --------- | :------: | :------ | :--------- | :----------------------------------------------- |
-| name      |    否    | string  | `http_api` | 名称，校验规则：最长50个字符，支持 a-z，A-Z，0-9 |
-| timeout   |    否    | number  | `15`       | Api 超时时间，单位: 秒，时间范围：1-1800秒       |
-| cors      |    否    | boolean | `true`     | 是否支持跨域                                     |
-| qualifier |    否    | string  | `$DEFAULT` | 关联的函数版本                                   |
+| 参数名称  | 是否必选 | 类型    | 默认值     | 描述                                               |
+| --------- | :------: | :------ | :--------- | :------------------------------------------------- |
+| name      |    否    | string  | `http_api` | 名称，校验规则：最长 50 个字符，支持 a-z，A-Z，0-9 |
+| timeout   |    否    | number  | `15`       | Api 超时时间，单位: 秒，时间范围：1-1800 秒        |
+| cors      |    否    | boolean | `true`     | 是否支持跨域                                       |
+| qualifier |    否    | string  | `$DEFAULT` | 关联的函数版本                                     |
 
 ##### UsagePlan
 
@@ -237,10 +237,10 @@ API 密钥配置
 
 自定义路径映射
 
-| 参数名称    | 是否必选 | 类型   | Description                                   |
-| ----------- | :------: | :----- | :-------------------------------------------- |
-| path        |    是    | string | 自定义映射路径                                |
-| environment |    是    | string | 自定义映射环境，有效值：test、prepub和release |
+| 参数名称    | 是否必选 | 类型   | Description                                     |
+| ----------- | :------: | :----- | :---------------------------------------------- |
+| path        |    是    | string | 自定义映射路径                                  |
+| environment |    是    | string | 自定义映射环境，有效值：test、prepub 和 release |
 
 ### Assets
 

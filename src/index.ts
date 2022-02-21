@@ -134,18 +134,18 @@ export class ServerlessComponent extends Component<State> {
     const apigwOutput = await apigw.deploy(deepClone(tempInputs));
 
     const outputs: ApigwOutputs = {
-      created: apigwOutput.created,
-      id: apigwOutput.serviceId,
-      subDomain: apigwOutput.subDomain,
-      environment: apigwOutput.environment,
-      url: `${getDefaultProtocol(inputs.protocols)}://${apigwOutput.subDomain}/${
-        apigwOutput.environment
+      created: apigwOutput!.created,
+      id: apigwOutput!.serviceId,
+      subDomain: apigwOutput!.subDomain,
+      environment: apigwOutput!.environment,
+      url: `${getDefaultProtocol(inputs.protocols)}://${apigwOutput!.subDomain}/${
+        apigwOutput!.environment
       }${tempInputs.endpoints[0].path}`,
-      apiList: apigwOutput.apiList,
+      apiList: apigwOutput!.apiList,
     };
 
-    if (apigwOutput.customDomains) {
-      outputs.customDomains = apigwOutput.customDomains;
+    if (apigwOutput!.customDomains) {
+      outputs.customDomains = apigwOutput!.customDomains;
     }
 
     this.state.apigw = outputs;
@@ -200,7 +200,7 @@ export class ServerlessComponent extends Component<State> {
           console.log('Ignore cos update (ignore deploy)...');
         } else {
           const deployRes = await cos.deploy(curInputs);
-          cosOutput.bucket = deployRes.bucket;
+          cosOutput.bucket = deployRes!.bucket;
         }
         cosOutput.cosOrigin = `${curInputs.bucket}.cos.${region}.myqcloud.com`;
 
@@ -221,9 +221,9 @@ export class ServerlessComponent extends Component<State> {
           const cdnDeployRes = await cdn.deploy(cdnInputs);
           const protocol = cdnInputs.https ? 'https' : 'http';
           const cdnOutput = {
-            domain: cdnDeployRes.domain,
-            url: `${protocol}://${cdnDeployRes.domain}`,
-            cname: cdnDeployRes.cname,
+            domain: cdnDeployRes!.domain,
+            url: `${protocol}://${cdnDeployRes!.domain}`,
+            cname: cdnDeployRes!.cname,
           };
           deployAssetsOutputss.cdn = cdnOutput;
 
