@@ -1,0 +1,11 @@
+type: component
+name: http
+version: 0.0.11
+author: Tencent Cloud Inc.
+org: Tencent Cloud Inc.
+description: HTTP 组件，允许用户开发部署常见的 Web 框架应用。支持的框架有：Express, Next.js, Flask, Laravel等。
+keywords: http,web,framework,tencent,serverless
+repo: https://github.com/serverless-components/tencent-http
+readme: https://github.com/serverless-components/tencent-http/tree/master/README.md
+license: 'MIT'
+main: ./build
