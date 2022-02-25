@@ -227,7 +227,7 @@ API 密钥配置
 | ---------------- | :------: | :-------------------- | :----: | :---------------------------------------------------------------------------------- |
 | domain           |    是    | string                |        | 待绑定的自定义的域名。                                                              |
 | protocol         |    否    | string[]              |        | 绑定自定义域名的协议类型，默认与服务的前端协议一致。                                |
-| certificateId    |    否    | string                |        | 待绑定自定义域名的证书 ID，如果设置了 `protocol` 含有 https，则为必选               |
+| certId           |    否    | string                |        | 待绑定自定义域名的证书 ID，如果设置了 `protocol` 含有 https，则为必选               |
 | isDefaultMapping |    否    | string                | `true` | 是否使用默认路径映射。为 `false` 时，表示自定义路径映射，此时 pathMappingSet 必填。 |
 | pathMappingSet   |    否    | [PathMap](#PathMap)[] |  `[]`  | 自定义路径映射的路径。                                                              |
 
