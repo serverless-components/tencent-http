@@ -1,6 +1,6 @@
 type: component
 name: http
-version: dev
+version: 0.0.12
 author: Tencent Cloud Inc.
 org: Tencent Cloud Inc.
 description: HTTP 组件，允许用户开发部署常见的 Web 框架应用。支持的框架有：Express, Next.js, Flask, Laravel等。
