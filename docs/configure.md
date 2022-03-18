@@ -68,7 +68,7 @@ inputs:
       id: app-xxx
       name: app_demo
       description: app description
-  # 通常是为了部署 ssr 框架编译生成的静态文件
+  # 通常用于将文件上传至cos做备份，访问还是通过网关访问
   assets:
     cos:
       bucket: static-bucket
