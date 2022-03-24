@@ -329,3 +329,5 @@ actions:
                   - global
               ignoreUpdate:
                 type: boolean
+  remove:
+    definition: Remove your SCF web application
