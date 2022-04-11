@@ -1,6 +1,6 @@
 type: component
 name: http
-version: 0.0.12
+version: 0.0.14
 author: Tencent Cloud Inc.
 org: Tencent Cloud Inc.
 description: HTTP 组件，允许用户开发部署常见的 Web 框架应用。支持的框架有：Express, Next.js, Flask, Laravel等。
@@ -331,3 +331,6 @@ actions:
                   - global
               ignoreUpdate:
                 type: boolean
+  remove:
+    definition: Remove your SCF web application
+
