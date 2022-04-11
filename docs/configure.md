@@ -231,6 +231,7 @@ API 密钥配置
 | certId           |    否    | string                |        | 待绑定自定义域名的证书 ID，如果设置了 `protocol` 含有 https，则为必选               |
 | isDefaultMapping |    否    | string                | `true` | 是否使用默认路径映射。为 `false` 时，表示自定义路径映射，此时 pathMappingSet 必填。 |
 | pathMappingSet   |    否    | [PathMap](#PathMap)[] |  `[]`  | 自定义路径映射的路径。                                                              |
+| isForcedHttps | 否 | boolean | `false` | 是否启用**Https**强制重定向功能 | 
 
 > 注意：使用自定义映射时，可一次仅映射一个 path 到一个环境，也可映射多个 path 到多个环境。并且一旦使用自定义映射，原本的默认映射规则不再生效，只有自定义映射路径生效。
 
